@@ -1,10 +1,145 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <title>English Quiz Game</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css">
+    <script src="https://unpkg.com/vue@3"></script>
+    <style>
+        .quiz-box {
+            background: white;
+            border: 1px solid black;
+            height: auto;
+            padding: 2em;
+            border-radius: 1em;
+            max-width: 38em;
+            margin: auto;
+            margin-top: 2em;
+        }
+        .option {
+            margin: 0.5em 0;
+        }
+    </style>
 </head>
 <body>
-$END$
+<main id="main" class="container">
+    <section class="quiz-box" v-if="!quizFinished && currentQuestion">
+        <h2>Question {{ currentIndex + 1 }} of {{ questions.length }}</h2>
+        <p>{{ currentQuestion.question }}</p>
+
+        <!-- Múltiples inputs si es tipo texto -->
+        <div v-if="currentQuestion.type === 'text'">
+            <div v-for="(n, i) in currentQuestion.inputCount" :key="i">
+                <input
+                        type="text"
+                        v-model="userAnswer[i]"
+                        class="form-control mb-2"
+                        :placeholder="'Respuesta ' + (i + 1)"
+                />
+            </div>
+        </div>
+
+        <!-- Opciones tipo selección -->
+        <div v-else>
+            <div v-for="option in currentQuestion.options" :key="option">
+                <label class="option">
+                    <input type="radio" v-model="userAnswer" :value="option">
+                    {{ option }}
+                </label>
+            </div>
+        </div>
+
+        <button
+                class="btn btn-primary"
+                @click="submitAnswer"
+                :disabled="!isAnswerComplete"
+        >
+            Next
+        </button>
+    </section>
+
+    <section class="quiz-box" v-if="quizFinished">
+        <h2>Quiz Finished</h2>
+        <p>You scored {{ score }} out of {{ questions.length }}</p>
+        <button class="btn btn-success" @click="restartQuiz">Try again</button>
+    </section>
+</main>
+<script>
+    const { createApp } = Vue;
+
+    createApp({
+        data() {
+            return {
+                questions: [],
+                currentIndex: 0,
+                userAnswer: [],
+                score: 0,
+                quizFinished: false
+            };
+        },
+        computed: {
+            currentQuestion() {
+                return this.questions[this.currentIndex] || null;
+            },
+            isAnswerComplete() {
+                const q = this.currentQuestion;
+                const ans = this.userAnswer;
+                if (!q) return false;
+
+                if (q.type === 'text') {
+                    return Array.isArray(ans)
+                        && ans.length === q.inputCount
+                        && ans.every(a => a && a.trim() !== '');
+                } else {
+                    return ans && ans.trim && ans.trim() !== '';
+                }
+            }
+        },
+        methods: {
+            async fetchQuestions() {
+                try {
+                    const response = await fetch('http://localhost:3000/api/questions');
+                    this.questions = await response.json();
+                    console.log("Preguntas recibidas:", this.questions);
+                } catch (error) {
+                    console.error("Error loading the questions", error);
+                }
+            },
+            submitAnswer() {
+                const correct = this.currentQuestion.answer;
+                let isCorrect = false;
+
+                if (Array.isArray(correct)) {
+                    isCorrect = Array.isArray(this.userAnswer)
+                        && this.userAnswer.length === correct.length
+                        && this.userAnswer.every((val, i) =>
+                            val.trim().toLowerCase() === correct[i].toLowerCase()
+                        );
+                } else {
+                    isCorrect = this.userAnswer?.trim().toLowerCase() === correct.toLowerCase();
+                }
+
+                if (isCorrect) this.score++;
+
+                this.userAnswer = Array.isArray(correct) ? [] : null;
+                this.currentIndex++;
+
+                if (this.currentIndex >= this.questions.length) {
+                    this.quizFinished = true;
+                }
+            },
+            restartQuiz() {
+                this.userAnswer = [];
+                this.score = 0;
+                this.quizFinished = false;
+                this.currentIndex = 0;
+                this.fetchQuestions();
+            }
+        },
+        mounted() {
+            this.fetchQuestions();
+        }
+    }).mount("#main");
+</script>
 </body>
 </html>

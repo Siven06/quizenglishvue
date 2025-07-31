@@ -1,0 +1,64 @@
+[
+
+  {
+    "question": "I have __ umbrella. It’s not __, it’s __.",
+    "type": "text",
+    "inputCount": 3,
+    "answer": ["an", "yours", "mine"]
+  },
+  {
+    "question": "She has __ idea for the project. That idea is not __, it’s __.",
+    "type": "text",
+    "inputCount": 3,
+    "answer": ["an", "ours", "hers"]
+  },
+  {
+    "question": "We met __ artist at the gallery. The painting is not __, it’s __.",
+    "type": "text",
+    "inputCount": 3,
+    "answer": ["an", "his", "theirs"]
+  },
+  {
+    "question": "He found __ wallet on the floor. Is it __? No, it’s not __.",
+    "type": "text",
+    "inputCount": 3,
+    "answer": ["a", "yours", "theirs"]
+  },
+  {
+    "question": "They showed us __ car yesterday. The car is not __, it’s __.",
+    "type": "text",
+    "inputCount": 3,
+    "answer": ["a", "ours", "theirs"]
+  },
+  {
+    "question": "I have a dog. It is __ dog.",
+    "options": ["your", "their", "my", "his"],
+    "answer": "my"
+  },
+  {
+    "question": "This is John. That’s __ car.",
+    "options": ["your", "their", "my", "his"],
+    "answer": "his"
+  },
+  {
+    "question": "Is this __ pen, Sarah?",
+    "options": ["your", "their", "my", "his"],
+    "answer": "your"
+  },
+  {
+    "question": "They are students. This is __ classroom.",
+    "options": ["your", "their", "my", "his"],
+    "answer": "their"
+  },
+  {
+    "question": "Who does this pen belong to? It belongs to me. It’s __.",
+    "options": ["yours", "mine", "his", "hers"],
+    "answer": "mine"
+  },
+  {
+    "question": "Is that phone yours or mine? It’s not mine, it’s __.",
+    "options": ["yours", "mine", "his", "ours"],
+    "answer": "yours"
+  }
+
+]
